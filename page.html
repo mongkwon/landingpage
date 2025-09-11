@@ -1,0 +1,229 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Computown OS — Beta 알림 등록</title>
+  <meta name="description" content="#컴퓨타운OS — 모든 앱이 인공지능인 운영체제. 지금 베타 알림 등록하세요!" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg1:#b3c6ff; --bg2:#ffb3d1; --bg3:#ffd6a5; --glass:rgba(255,255,255,.1);
+      --white: #ffffff; --ink:#0f172a; --ink-dim:#334155; --brand:#7c3aed; --ok:#10b981; --warn:#ef4444;
+      --blur: 18px; --radius: 20px; --shadow: 0 10px 30px rgba(2,6,23,.15);
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0; font-family: "Pretendard",system-ui, -apple-system, Segoe UI, Roboto, "Noto Sans KR", Arial, Apple SD Gothic Neo, sans-serif;
+      color:var(--ink);
+      background: radial-gradient(1200px 800px at 10% 10%, var(--bg1), transparent 60%),
+                  radial-gradient(1200px 800px at 90% 15%, var(--bg2), transparent 60%),
+                  radial-gradient(1000px 700px at 50% 100%, var(--bg3), transparent 60%),
+                  linear-gradient(120deg, #e6f0ff, #f7f5ff 60%, #fef7f3);
+      min-height:100%;
+    }
+    .wrap{display:grid; place-items:center; min-height:100dvh; padding:28px}
+    .card{
+      width:min(960px, 100%);
+      backdrop-filter: blur(var(--blur));
+      background: linear-gradient(180deg, rgba(255,255,255,.4), rgba(255,255,255,.22));
+      border:1px solid rgba(255,255,255,.5);
+      border-radius:32px; box-shadow: var(--shadow);
+      padding: clamp(20px, 4vw, 36px);
+    }
+    header{
+      display:flex; gap:14px; align-items:center; justify-content:space-between; margin-bottom:24px
+    }
+    .brand{display:flex; gap:12px; align-items:center}
+    .logo{
+      width:48px; height:48px; border-radius:16px; display:grid; place-items:center;
+      background: linear-gradient(145deg, rgba(255,255,255,.7), rgba(255,255,255,.35));
+      border:1px solid rgba(255,255,255,.6); box-shadow: inset 0 0 0 1px rgba(255,255,255,.35);
+    }
+    /* AI-star emblem */
+    .logo svg{filter: drop-shadow(0 4px 8px rgba(124,58,237,.28))}
+
+    .title h1{margin:0; font-size:clamp(24px, 3.2vw, 38px); letter-spacing:-.01em}
+    .subtitle{color:var(--ink-dim); font-size:clamp(14px, 1.7vw, 16px)}
+
+    .hero{
+      display:grid; grid-template-columns: 1.2fr .9fr; gap: clamp(16px, 3vw, 28px);
+    }
+    @media (max-width:900px){ .hero{grid-template-columns: 1fr} }
+
+    .panel{
+      background: var(--glass); border:1px solid rgba(255,255,255,.45); border-radius:24px; padding:22px; backdrop-filter: blur(var(--blur));
+    }
+    .panel h2{margin:0 0 8px; font-size:clamp(18px, 2.2vw, 22px)}
+    .panel p{margin:0 0 12px; color:var(--ink-dim)}
+
+    .tags{display:flex; flex-wrap:wrap; gap:8px; margin-top:10px}
+    .tag{padding:6px 10px; border-radius:999px; background:rgba(124,58,237,.12); color:#4c1d95; font-weight:600; font-size:13px}
+
+    form{display:grid; gap:12px; margin-top:10px}
+    .field{display:flex; gap:10px; align-items:center}
+    .input{
+      flex:1; display:flex; align-items:center; gap:10px; padding:14px 14px; background:rgba(255,255,255,.75);
+      border:1px solid rgba(15,23,42,.08); border-radius:14px; box-shadow: inset 0 1px 0 rgba(255,255,255,.6);
+    }
+    .input input{
+      border:none; outline:none; width:100%; background:transparent; font-size:16px; color:var(--ink);
+    }
+
+    .btn{
+      appearance:none; border:none; cursor:pointer; padding:14px 18px; font-weight:700; border-radius:14px; font-size:16px;
+      background: linear-gradient(135deg, #7c3aed 0%, #06b6d4 100%); color:var(--white); box-shadow: 0 8px 20px rgba(124,58,237,.35);
+      transition: transform .06s ease, box-shadow .2s ease;
+    }
+    .btn:active{ transform: translateY(1px); box-shadow: 0 5px 12px rgba(124,58,237,.25)}
+
+    .note{font-size:13px; color:var(--ink-dim)}
+    .check{display:flex; gap:8px; align-items:flex-start; font-size:14px; color:var(--ink-dim)}
+
+    /* Toast */
+    .toast{
+      position: fixed; left:50%; bottom:28px; transform:translateX(-50%) translateY(120%);
+      background:rgba(15,23,42,.9); color:white; padding:12px 16px; border-radius:999px; box-shadow:0 10px 30px rgba(2,6,23,.35);
+      display:flex; gap:10px; align-items:center; font-weight:600; z-index:50; opacity:0; transition: all .35s ease;
+    }
+    .toast.show{ transform:translateX(-50%) translateY(0); opacity:1 }
+    .toast .dot{width:8px; height:8px; border-radius:50%}
+    .toast.ok .dot{background:var(--ok)}
+    .toast.warn .dot{background:var(--warn)}
+
+    footer{margin-top:20px; color:var(--ink-dim); font-size:13px}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="card" role="region" aria-label="Computown OS Beta Landing">
+      <header>
+        <div class="brand">
+          <div class="logo" aria-hidden="true">
+            <!-- Star/AI emblem -->
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <defs>
+                <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+                  <stop offset="0%" stop-color="#7c3aed"/>
+                  <stop offset="100%" stop-color="#06b6d4"/>
+                </linearGradient>
+              </defs>
+              <path d="M12 2c.7 0 1.27.56 1.27 1.25v3.3c0 .69.56 1.25 1.25 1.25h3.3c.69 0 1.25.57 1.25 1.27 0 .69-.56 1.25-1.25 1.25h-3.3c-.69 0-1.25.56-1.25 1.25v3.3c0 .69-.57 1.25-1.27 1.25-.69 0-1.25-.56-1.25-1.25v-3.3c0-.69-.56-1.25-1.25-1.25H6.2c-.69 0-1.25-.56-1.25-1.25 0-.7.56-1.27 1.25-1.27h3.3c.69 0 1.25-.56 1.25-1.25v-3.3C10.75 2.56 11.31 2 12 2z" fill="url(#g)" opacity=".95"/>
+            </svg>
+          </div>
+          <div class="title">
+            <h1>Computown OS — Beta 알림 등록</h1>
+            <div class="subtitle">모든 앱이 인공지능인 운영체제. 파일은 스스로 찾고, 설정은 스스로 바뀝니다.</div>
+          </div>
+        </div>
+      </header>
+
+      <section class="hero">
+        <article class="panel">
+          <h2>사람과 기술이 함께 웃는 OS</h2>
+          <p>파일 탐색기가 파일을 스스로 찾아주고, 환경 설정을 스스로 바꿔주는 <strong>AI‑Native OS</strong> — 지금 베타 알림을 등록해보세요.</p>
+          <div class="tags" aria-label="hashtags">
+            <span class="tag">#컴퓨타운</span>
+            <span class="tag">#인공지능</span>
+            <span class="tag">#OS</span>
+          </div>
+        </article>
+
+        <aside class="panel" aria-label="Beta registration form">
+          <h2>베타 알림 등록</h2>
+          <form id="betaForm" novalidate>
+            <label class="field" for="phone">
+              <div class="input" style="width:100%">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                  <path d="M6 2h12a2 2 0 0 1 2 2v16a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2zm3 18h6" stroke="#64748b" stroke-width="1.5" stroke-linecap="round"/>
+                </svg>
+                <input id="phone" name="phone" inputmode="numeric" autocomplete="tel"
+                  placeholder="휴대폰 번호 (예: 010-1234-5678)" aria-label="휴대폰 번호"
+                  pattern="^0(10|11|16|17|18|19)-?\d{3,4}-?\d{4}$" required />
+              </div>
+            </label>
+
+            <label class="check">
+              <input type="checkbox" id="agree" required />
+              <span>개인정보 수집·이용에 동의합니다. (알림 목적 외 사용하지 않으며 언제든 철회 가능)</span>
+            </label>
+
+            <button class="btn" type="submit">등록</button>
+            <p class="note">제출 시 알림용 번호로만 저장되며, 베타 오픈 시 1회 안내됩니다.</p>
+          </form>
+        </aside>
+      </section>
+
+      <footer>
+        © <span id="y"></span> Computown OS. All rights reserved.
+      </footer>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div id="toast" class="toast" role="status" aria-live="polite">
+    <span class="dot"></span>
+    <span id="toastMsg">처리되었습니다.</span>
+  </div>
+
+  <script>
+    const yearEl = document.getElementById('y');
+    yearEl.textContent = new Date().getFullYear();
+
+    const form = document.getElementById('betaForm');
+    const phone = document.getElementById('phone');
+    const agree = document.getElementById('agree');
+    const toast = document.getElementById('toast');
+    const toastMsg = document.getElementById('toastMsg');
+
+    // 간단한 포맷터: 010-1234-5678 형태로 자동 하이픈
+    phone.addEventListener('input', e => {
+      const digits = e.target.value.replace(/\D/g, '').slice(0, 11);
+      let out = digits;
+      if (digits.length > 7) out = `${digits.slice(0,3)}-${digits.slice(3,7)}-${digits.slice(7)}`;
+      else if (digits.length > 3) out = `${digits.slice(0,3)}-${digits.slice(3)}`;
+      e.target.value = out;
+    });
+
+    function showToast(message, ok=true){
+      toastMsg.textContent = message;
+      toast.classList.remove('ok','warn');
+      toast.classList.add(ok? 'ok':'warn');
+      toast.classList.add('show');
+      clearTimeout(window.__t);
+      window.__t = setTimeout(()=> toast.classList.remove('show'), 2400);
+    }
+
+    form.addEventListener('submit', async (e)=>{
+      e.preventDefault();
+      if (!phone.checkValidity() || !agree.checked){
+        showToast('번호와 동의 항목을 확인해주세요.', false);
+        return;
+      }
+
+      const payload = { phone: phone.value, ts: Date.now() };
+
+      // TODO: 실제 서버가 있다면 아래 주석 해제 후 엔드포인트로 전송하세요.
+      // try {
+      //   const res = await fetch('https://your.api/notify-beta', {
+      //     method:'POST', headers:{'Content-Type':'application/json'},
+      //     body: JSON.stringify(payload)
+      //   });
+      //   if(!res.ok) throw new Error('Network');
+      // } catch(err){
+      //   showToast('서버 연결에 실패했습니다. 잠시 후 다시 시도해주세요.', false);
+      //   return;
+      // }
+
+      // 데모: 로컬 저장 및 성공 토스트
+      const list = JSON.parse(localStorage.getItem('computown_beta')||'[]');
+      list.push(payload); localStorage.setItem('computown_beta', JSON.stringify(list));
+      showToast('등록 완료! 베타 오픈 시 알려드릴게요.');
+      form.reset();
+    });
+  </script>
+</body>
+</html>
