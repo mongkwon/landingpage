@@ -1,43 +1,58 @@
 ```mermaid
 
 flowchart TD
-  %% 시작 / 종료
-  S([퀘스트 시작])
-  END([퀘스트 완료])
-  FAIL([퀘스트 실패])
 
-  %% 처리 노드
-  A[수문 제어실 진입]
-  B[퀘스트 제한 시간 3분 시작]
-  C[수문 제어 장치 상호작용 가능]
-  D[협동으로 전자석 출력 레버 조작]
-  E[수문 완전 개방]
+%% ========================
+%% 노드 정의
+%% ========================
 
-  %% 시스템 메시지 (사다리꼴)
-  M1[/시스템 메시지: 수문 제어실 진입/]
-  M2[/시스템 메시지: 경고 수위 도달까지 남은 시간 03:00/]
-  M3[/시스템 메시지: 알파는 커멘더 무전기를 얻었다/]
+A([시작])
+A --> B[수문 제어실 진입]
 
-  %% 조건
-  J{3분 이내에 개방했는가?}
+B --> M1[[시스템 메시지: 수문 제어실 진입]]
+M1 --> M2[[시스템 메시지: 경고 수위 도달까지 남은 시간 03:00]]
 
-  %% 흐름
-  S --> A
-  A --> M1 --> M2
-  M2 --> B --> C --> D --> E
-  E --> J
+%% 시스템 규칙 적용
+M2 --> T[[퀘스트 제한 시간 3분 시작]]
 
-  J -->|Yes| M3 --> END
-  J -->|No| FAIL
+%% 일반 처리 흐름
+T --> C[수문 제어 장치 상호작용 가능]
+C --> D[협동으로 전자석 출력 레버 조작]
+D --> E[수문 완전 개방]
 
-  %% 스타일 정의
-  classDef process fill:#E3F2FD,stroke:#1565C0,color:#000;
-  classDef system fill:#E8F5E9,stroke:#2E7D32,color:#000;
-  classDef decision fill:#FFF3E0,stroke:#EF6C00,color:#000;
-  classDef startend fill:#F3E5F5,stroke:#6A1B9A,color:#000;
+%% 조건 판정
+E --> F{3분 이내에 개방했는가?}
 
-  %% 스타일 적용
-  class A,B,C,D,E process;
-  class M1,M2,M3 system;
-  class J decision;
-  class S,END,FAIL startend;
+%% 성공 처리
+F -->|예| R[[알파는 커멘더 무전기를 얻었다]]
+R --> G[퀘스트 목표 소거]
+G --> H([퀘스트 종료])
+
+%% 실패 처리
+F -->|아니오| I([퀘스트 실패])
+
+
+%% ========================
+%% 스타일 정의
+%% ========================
+
+%% 시작 / 종료
+style A fill:#ffe599,stroke:#d6b656,stroke-width:2px
+style H fill:#d9ead3,stroke:#38761d,stroke-width:2px
+style I fill:#f4cccc,stroke:#cc0000,stroke-width:2px
+
+%% 일반 처리 노드
+style B fill:#fff2cc,stroke:#d6b656,stroke-width:2px
+style C fill:#d0e0e3,stroke:#6fa8dc,stroke-width:2px
+style D fill:#d0e0e3,stroke:#6fa8dc,stroke-width:2px
+style E fill:#d0e0e3,stroke:#6fa8dc,stroke-width:2px
+style G fill:#d9ead3,stroke:#38761d,stroke-width:2px
+
+%% 조건 노드
+style F fill:#e1f0ff,stroke:#6fa8dc,stroke-width:2px
+
+%% 시스템 계산 / 적용 노드
+style M1 fill:#e8f5e9,stroke:#2e7d32,stroke-width:2px
+style M2 fill:#e8f5e9,stroke:#2e7d32,stroke-width:2px
+style T  fill:#fff2cc,stroke:#e69138,stroke-width:2px
+style R  fill:#e8f5e9,stroke:#2e7d32,stroke-width:2px
