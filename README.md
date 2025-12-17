@@ -59,6 +59,5 @@ style R  fill:#e8f5e9,stroke:#2e7d32,stroke-width:2px
 
 %% 시스템 규칙 적용
 style T fill:#fff2cc,stroke:#e69138,stroke-width:2px
-ke-width:2px
 style T  fill:#fff2cc,stroke:#e69138,stroke-width:2px
 style R  fill:#e8f5e9,stroke:#2e7d32,stroke-width:2px
