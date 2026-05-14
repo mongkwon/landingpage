@@ -69,18 +69,24 @@ graph LR
     %% 10단계: 로그아웃
     Home --> Logout[로그아웃]
     
-    %% 외부 사용자 플로우
+    style User fill:#e3f2fd,stroke:#1976d2,stroke-width:3px
+    style Login fill:#c8e6c9,stroke:#388e3c
+    style CreateMeetup fill:#fff9c4,stroke:#fbc02d
+    style StartShare fill:#b2ebf2,stroke:#0097a7
+    style OpenKakao fill:#e0e0e0,stroke:#616161
+```
+
+### 외부 사용자 (비회원) 플로우
+
+```mermaid
+graph LR
     ExternalUser([외부 사용자<br/>비회원])
     ExternalUser --> AccessLink[공유 링크 접속]
     AccessLink --> ViewMeetupInfo[약속 정보 확인<br/>읽기 전용]
     
-    style User fill:#e3f2fd,stroke:#1976d2,stroke-width:3px
     style ExternalUser fill:#fff3e0,stroke:#f57c00,stroke-width:3px
-    style Login fill:#c8e6c9,stroke:#388e3c
-    style CreateMeetup fill:#fff9c4,stroke:#fbc02d
-    style Recommend fill:#ffccbc,stroke:#e64a19
-    style StartShare fill:#b2ebf2,stroke:#0097a7
-    style OpenKakao fill:#e0e0e0,stroke:#616161
+    style AccessLink fill:#ffe0b2
+    style ViewMeetupInfo fill:#ffcc80
 ```
 
 ## 주요 유즈케이스 흐름
