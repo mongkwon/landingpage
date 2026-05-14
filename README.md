@@ -27,12 +27,8 @@ graph LR
     SetLocation --> SetTransport[교통수단 선택<br/>자동차/대중교통]
     
     %% 4단계: 장소 추천 및 확정
-    SetTransport --> RecommendChoice{장소 추천 방식}
-    RecommendChoice -->|공평 거리 추천| FairRecommend[공평 거리<br/>장소 추천]
-    RecommendChoice -->|최적 거리 추천| OptimalRecommend[최적 거리<br/>장소 추천]
-    
-    FairRecommend --> ViewPlaceList[추천 장소<br/>목록 보기]
-    OptimalRecommend --> ViewPlaceList
+    SetTransport --> RecommendChoice[장소 추천 방식 선택<br/>공평거리/최적거리]
+    RecommendChoice --> ViewPlaceList[추천 장소<br/>목록 보기]
     ViewPlaceList --> SelectPlace[장소 선택]
     SelectPlace --> ViewDistance[참여자별<br/>거리/시간 보기]
     ViewDistance --> ViewMap[지도 보기]
