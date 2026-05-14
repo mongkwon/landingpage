@@ -76,19 +76,6 @@ graph LR
     style OpenKakao fill:#e0e0e0,stroke:#616161
 ```
 
-### 외부 사용자 (비회원) 플로우
-
-```mermaid
-graph LR
-    ExternalUser([외부 사용자<br/>비회원])
-    ExternalUser --> AccessLink[공유 링크 접속]
-    AccessLink --> ViewMeetupInfo[약속 정보 확인<br/>읽기 전용]
-    
-    style ExternalUser fill:#fff3e0,stroke:#f57c00,stroke-width:3px
-    style AccessLink fill:#ffe0b2
-    style ViewMeetupInfo fill:#ffcc80
-```
-
 ## 주요 유즈케이스 흐름
 
 ### 1. 회원 가입 및 로그인
@@ -160,18 +147,16 @@ graph LR
     I --> J[카카오맵 앱/웹 열기]
 ```
 
-### 6. 외부 사용자 참여 흐름
+### 6. 외부 사용자 흐름
 ```mermaid
 graph LR
-    A[약속 주최자] --> B[공유 링크 생성]
-    B --> C[외부 사용자에게 전달]
-    C --> D[외부 사용자<br/>링크 접속]
-    D --> E[이름 입력]
-    E --> F[출발지 설정]
-    F --> G[교통수단 선택]
-    G --> H[약속 정보 확인]
-    H --> I[참여자로 추가]
-    I --> J[약속 상세 보기]
+    ExternalUser([외부 사용자<br/>비회원])
+    ExternalUser --> AccessLink[공유 링크 접속]
+    AccessLink --> ViewMeetupInfo[약속 정보 확인<br/>읽기 전용]
+    
+    style ExternalUser fill:#fff3e0,stroke:#f57c00,stroke-width:3px
+    style AccessLink fill:#ffe0b2
+    style ViewMeetupInfo fill:#ffcc80
 ```
 
 ## 액터별 주요 기능 정리
@@ -186,9 +171,7 @@ graph LR
 - **준비물**: 추가, 보기, 삭제
 
 ### 외부 사용자 (비회원)
-- **참여**: 공유 링크로 약속 접속
-- **정보 입력**: 이름, 출발지, 교통수단
-- **조회**: 약속 정보 확인
+- **조회**: 공유 링크로 약속 정보 확인 (읽기 전용)
 
 ## 시스템 경계
 
