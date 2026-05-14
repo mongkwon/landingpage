@@ -70,9 +70,9 @@ graph LR
     Home --> Logout[로그아웃]
     
     %% 외부 사용자 플로우
-    ExternalUser([외부 사용자])
+    ExternalUser([외부 사용자<br/>비회원])
     ExternalUser --> AccessLink[공유 링크 접속]
-    AccessLink --> ViewMeetupInfo[약속 정보 확인]
+    AccessLink --> ViewMeetupInfo[약속 정보 확인<br/>읽기 전용]
     
     style User fill:#e3f2fd,stroke:#1976d2,stroke-width:3px
     style ExternalUser fill:#fff3e0,stroke:#f57c00,stroke-width:3px
