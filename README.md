@@ -3,80 +3,89 @@
 ## 전체 유즈케이스 다이어그램
 
 ```mermaid
-graph TB
-    %% 액터
+graph LR
+    %% 회원 사용자 플로우
     User([회원 사용자])
+    
+    %% 1단계: 인증
+    User --> Login[카카오 로그인]
+    Login --> Home[홈 화면]
+    
+    %% 2단계: 프로필 및 관계 설정
+    Home --> Profile[프로필 보기/수정]
+    Home --> Friends[친구 관리]
+    Home --> Crews[크루 관리]
+    
+    %% 3단계: 약속 관련 분기
+    Home --> MeetupList[약속 목록 보기]
+    Home --> CreateMeetup[약속 만들기]
+    
+    %% 3-1: 약속 만들기 흐름
+    CreateMeetup --> AddParticipant[참여자 추가<br/>친구/크루 선택]
+    AddParticipant --> SetLocation[출발지 설정<br/>주소 검색]
+    SetLocation --> SetTransport[교통수단 선택<br/>자동차/대중교통]
+    SetTransport --> AddItems[준비물 추가<br/>선택사항]
+    AddItems --> MeetupCreated[약속 생성 완료]
+    
+    %% 3-2: 약속 목록에서 상세
+    MeetupList --> Sort[정렬<br/>생성순/가까운순]
+    MeetupList --> Filter[지난 약속<br/>보기/숨기기]
+    MeetupList --> MeetupDetail[약속 상세 보기]
+    
+    %% 4단계: 약속 상세에서 분기
+    MeetupDetail --> EditMeetup[약속 수정]
+    MeetupDetail --> DeleteMeetup[약속 삭제]
+    MeetupDetail --> ShareLink[공유 링크 생성<br/>외부 사용자 초대]
+    MeetupDetail --> Recommend[공평 거리<br/>장소 추천]
+    
+    %% 5단계: 장소 추천 및 확정
+    Recommend --> CalcCenter[중심점 계산<br/>Geometric Median]
+    CalcCenter --> SearchPlaces[장소 검색<br/>카카오 플레이스]
+    SearchPlaces --> CalcFairness[공평도 계산<br/>거리 편차]
+    CalcFairness --> ShowPlaces[장소 목록 표시]
+    ShowPlaces --> SelectPlace[장소 선택]
+    SelectPlace --> ConfirmPlace[장소 확정]
+    
+    %% 6단계: 확정 후 기능들
+    ConfirmPlace --> ViewDistance[참여자별<br/>거리/시간 보기]
+    ConfirmPlace --> ViewMap[지도 보기]
+    ViewMap --> ViewRoute[경로 표시<br/>자동차/대중교통]
+    
+    %% 7단계: 약속 당일 기능
+    MeetupDetail --> ShareLocationCheck{약속 1시간 전?}
+    ShareLocationCheck -->|Yes| StartShare[위치 공유 시작<br/>10초마다 업데이트]
+    ShareLocationCheck -->|No| WaitTime[대기]
+    StartShare --> RealtimeMap[실시간 지도<br/>참여자 위치 확인]
+    RealtimeMap --> StopShare[위치 공유 중단]
+    
+    %% 8단계: 길찾기
+    MeetupDetail --> NavigateBtn[길찾기 버튼]
+    NavigateBtn --> GeoCode[출발지 좌표 변환<br/>주소→좌표]
+    GeoCode --> OpenKakao[카카오맵 열기<br/>경로 안내]
+    
+    %% 9단계: 알림
+    Home --> Notifications[알림 목록]
+    Notifications --> ReadNotif[알림 읽기<br/>초대/수정/지각]
+    
+    %% 10단계: 로그아웃
+    Home --> Logout[로그아웃]
+    
+    %% 외부 사용자 플로우
     ExternalUser([외부 사용자])
+    ExternalUser --> AccessLink[공유 링크 접속]
+    AccessLink --> InputInfo[이름 입력]
+    InputInfo --> InputLocation[출발지 입력]
+    InputLocation --> InputTransport[교통수단 선택]
+    InputTransport --> JoinMeetup[약속 참여 완료]
+    JoinMeetup --> ViewMeetupInfo[약속 정보 확인]
     
-    %% 인증
-    Login[로그인]
-    Logout[로그아웃]
-    
-    %% 프로필 및 관계
-    Profile[프로필 관리]
-    Friends[친구 관리]
-    Crews[크루 관리]
-    
-    %% 약속
-    CreateMeetup[약속 만들기]
-    ManageMeetup[약속 관리]
-    ShareMeetup[약속 공유]
-    
-    %% 장소
-    RecommendPlace[공평 거리<br/>장소 추천]
-    SelectPlace[장소 선택 및 확정]
-    
-    %% 실시간
-    ShareLocation[실시간 위치 공유<br/>약속 1시간 전]
-    ViewRealtimeMap[실시간 지도 보기]
-    
-    %% 경로
-    ViewRoute[경로 보기]
-    Navigate[길찾기]
-    
-    %% 알림
-    Notifications[알림 확인]
-    
-    %% 준비물
-    ManageItems[준비물 관리]
-    
-    %% 외부 사용자
-    JoinViaLink[공유 링크로<br/>약속 참여]
-    
-    %% 연결: 회원 사용자
-    User --> Login
-    User --> Logout
-    User --> Profile
-    User --> Friends
-    User --> Crews
-    User --> CreateMeetup
-    User --> ManageMeetup
-    User --> ShareMeetup
-    User --> RecommendPlace
-    User --> SelectPlace
-    User --> ShareLocation
-    User --> ViewRealtimeMap
-    User --> ViewRoute
-    User --> Navigate
-    User --> Notifications
-    User --> ManageItems
-    
-    %% 연결: 외부 사용자
-    ExternalUser --> JoinViaLink
-    
-    %% Include 관계
-    CreateMeetup -.->|include| Friends
-    CreateMeetup -.->|include| Crews
-    RecommendPlace -.->|include| SelectPlace
-    ViewRoute -.->|include| ViewRealtimeMap
-    
-    style User fill:#e3f2fd
-    style ExternalUser fill:#fff3e0
-    style Login fill:#c8e6c9
-    style CreateMeetup fill:#fff9c4
-    style RecommendPlace fill:#ffccbc
-    style ShareLocation fill:#b2ebf2
-    style Navigate fill:#e0e0e0
+    style User fill:#e3f2fd,stroke:#1976d2,stroke-width:3px
+    style ExternalUser fill:#fff3e0,stroke:#f57c00,stroke-width:3px
+    style Login fill:#c8e6c9,stroke:#388e3c
+    style CreateMeetup fill:#fff9c4,stroke:#fbc02d
+    style Recommend fill:#ffccbc,stroke:#e64a19
+    style StartShare fill:#b2ebf2,stroke:#0097a7
+    style OpenKakao fill:#e0e0e0,stroke:#616161
 ```
 
 ## 주요 유즈케이스 흐름
