@@ -27,11 +27,20 @@ graph LR
     SetLocation --> SetTransport[교통수단 선택<br/>자동차/대중교통]
     
     %% 4단계: 장소 추천 및 확정
-    SetTransport --> Recommend[공평 거리<br/>장소 추천]
-    Recommend --> CalcCenter[중심점 계산<br/>Geometric Median]
-    CalcCenter --> SearchPlaces[장소 검색<br/>카카오 플레이스]
-    SearchPlaces --> CalcFairness[공평도 계산<br/>거리 편차]
-    CalcFairness --> ShowPlaces[장소 목록 표시<br/>공평도순 정렬]
+    SetTransport --> RecommendChoice{장소 추천 방식 선택}
+    RecommendChoice -->|공평 거리| CalcFair[중심점 계산<br/>Geometric Median]
+    RecommendChoice -->|최적 거리| CalcOptimal[중심점 계산<br/>Geometric Median]
+    
+    CalcFair --> SearchPlacesFair[장소 검색<br/>카카오 플레이스]
+    SearchPlacesFair --> CalcFairness[공평도 계산<br/>거리 편차]
+    CalcFairness --> ShowPlacesFair[장소 목록 표시<br/>편차 작은 순]
+    
+    CalcOptimal --> SearchPlacesOpt[장소 검색<br/>카카오 플레이스]
+    SearchPlacesOpt --> CalcTotal[총 거리 계산<br/>거리 합]
+    CalcTotal --> ShowPlacesOpt[장소 목록 표시<br/>총 거리 작은 순]
+    
+    ShowPlacesFair --> SelectPlace[장소 선택]
+    ShowPlacesOpt --> SelectPlace
     ShowPlaces --> SelectPlace[장소 선택]
     SelectPlace --> ViewDistance[참여자별<br/>거리/시간 보기]
     ViewDistance --> ViewMap[지도 보기]
