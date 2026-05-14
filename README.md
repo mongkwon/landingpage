@@ -21,10 +21,25 @@ graph LR
     Home --> CreateMeetup[약속 만들기]
     
     %% 3-1: 약속 만들기 흐름
-    CreateMeetup --> AddParticipant[참여자 추가<br/>친구/크루 선택]
+    CreateMeetup --> InputBasic[기본 정보 입력<br/>제목/날짜/시간/목적]
+    InputBasic --> AddParticipant[참여자 추가<br/>친구/크루 선택]
     AddParticipant --> SetLocation[출발지 설정<br/>주소 검색]
     SetLocation --> SetTransport[교통수단 선택<br/>자동차/대중교통]
-    SetTransport --> AddItems[준비물 추가<br/>선택사항]
+    
+    %% 4단계: 장소 추천 및 확정
+    SetTransport --> Recommend[공평 거리<br/>장소 추천]
+    Recommend --> CalcCenter[중심점 계산<br/>Geometric Median]
+    CalcCenter --> SearchPlaces[장소 검색<br/>카카오 플레이스]
+    SearchPlaces --> CalcFairness[공평도 계산<br/>거리 편차]
+    CalcFairness --> ShowPlaces[장소 목록 표시<br/>공평도순 정렬]
+    ShowPlaces --> SelectPlace[장소 선택]
+    SelectPlace --> ViewDistance[참여자별<br/>거리/시간 보기]
+    ViewDistance --> ViewMap[지도 보기]
+    ViewMap --> ViewRoute[경로 표시<br/>자동차/대중교통]
+    ViewRoute --> ConfirmPlace[장소 확정]
+    
+    %% 5단계: 약속 생성 완료
+    ConfirmPlace --> AddItems[준비물 추가<br/>선택사항]
     AddItems --> MeetupCreated[약속 생성 완료]
     
     %% 3-2: 약속 목록에서 상세
@@ -32,24 +47,11 @@ graph LR
     MeetupList --> Filter[지난 약속<br/>보기/숨기기]
     MeetupList --> MeetupDetail[약속 상세 보기]
     
-    %% 4단계: 약속 상세에서 분기
+    %% 6단계: 약속 상세에서 분기
     MeetupDetail --> EditMeetup[약속 수정]
     MeetupDetail --> DeleteMeetup[약속 삭제]
     MeetupDetail --> ShareLink[공유 링크 생성<br/>외부 사용자 초대]
-    MeetupDetail --> Recommend[공평 거리<br/>장소 추천]
-    
-    %% 5단계: 장소 추천 및 확정
-    Recommend --> CalcCenter[중심점 계산<br/>Geometric Median]
-    CalcCenter --> SearchPlaces[장소 검색<br/>카카오 플레이스]
-    SearchPlaces --> CalcFairness[공평도 계산<br/>거리 편차]
-    CalcFairness --> ShowPlaces[장소 목록 표시]
-    ShowPlaces --> SelectPlace[장소 선택]
-    SelectPlace --> ConfirmPlace[장소 확정]
-    
-    %% 6단계: 확정 후 기능들
-    ConfirmPlace --> ViewDistance[참여자별<br/>거리/시간 보기]
-    ConfirmPlace --> ViewMap[지도 보기]
-    ViewMap --> ViewRoute[경로 표시<br/>자동차/대중교통]
+    MeetupDetail --> ViewDetailMap[지도/경로 보기]
     
     %% 7단계: 약속 당일 기능
     MeetupDetail --> ShareLocationCheck{약속 1시간 전?}
